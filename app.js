@@ -30,7 +30,7 @@
   }
 
   // ---- 2) setup MediaPipe Face Detection ----
-  const faceDetection = new FaceDetection.FaceDetection({
+  const faceDetection = new FaceDetection({
     locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}`,
   });
   faceDetection.setOptions({ model: 'short', minDetectionConfidence: 0.6 });
@@ -142,4 +142,5 @@
     // already logged
   }
 })();
+
 
