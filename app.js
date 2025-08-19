@@ -19,7 +19,7 @@
     try {
       statusEl.textContent = 'loading FaceNet model…';
       // hosted model on your GitHub Pages assets
-      const MODEL_URL = 'https://phoenixuss.github.io/pwa-assets/models/facenet/model.json';
+      const MODEL_URL = 'https://phoenixuss.github.io/pwa-assets/model/facenet/model.json';
       facenetModel = await tf.loadLayersModel(MODEL_URL);
       statusEl.textContent = 'model loaded ✓';
     } catch (e) {
@@ -142,3 +142,4 @@
     // already logged
   }
 })();
+
