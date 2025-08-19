@@ -1,43 +1,144 @@
-// cache names are versioned so you can bust old caches by bumping this
-const CACHE_NAME = 'family-pwa-v2';
-
-// IMPORTANT for GitHub Pages subpaths: build a base path automatically
-// e.g., https://phoenixuss.github.io/family-pwa/  -> base '/family-pwa/'
-const BASE = (() => {
-  const url = new URL(self.location);
-  // sw.js sits at <base>/sw.js
-  return url.pathname.replace(/sw\.js$/, '');
-})();
-
-// minimal assets to pre-cache; keep paths relative to BASE
-const ASSETS = [
-  BASE,
-  BASE + 'index.html',
-  BASE + 'app.js',
-  BASE + 'script.js',
-  BASE + 'manifest.json'
+const CACHE_NAME = 'family-pwa-v1.0.0';
+const urlsToCache = [
+    '/',
+    '/index.html',
+    '/app.js',
+    '/script.js',
+    '/manifest.json',
+    '/icon-192.png',
+    '/icon-512.png',
+    'https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js',
+    'https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js',
+    'https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js',
+    'https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/face_detection.js'
 ];
 
-// install: pre-cache core assets
+// Install event - cache resources
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
-  );
+    event.waitUntil(
+        caches.open(CACHE_NAME)
+            .then((cache) => {
+                console.log('Opened cache');
+                return cache.addAll(urlsToCache.map(url => {
+                    return new Request(url, { mode: 'cors' });
+                }));
+            })
+            .catch((error) => {
+                console.error('Failed to cache resources during install:', error);
+            })
+    );
+    
+    // Force the waiting service worker to become the active service worker
+    self.skipWaiting();
 });
 
-// activate: clean older caches
+// Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
-    )
-  );
+    event.waitUntil(
+        caches.keys().then((cacheNames) => {
+            return Promise.all(
+                cacheNames.map((cacheName) => {
+                    if (cacheName !== CACHE_NAME) {
+                        console.log('Deleting old cache:', cacheName);
+                        return caches.delete(cacheName);
+                    }
+                })
+            );
+        }).then(() => {
+            // Ensure the new service worker takes control immediately
+            return self.clients.claim();
+        })
+    );
 });
 
-// fetch: cache-first, network fallback
+// Fetch event - serve cached content when offline
 self.addEventListener('fetch', (event) => {
-  const req = event.request;
-  event.respondWith(
-    caches.match(req).then((cached) => cached || fetch(req))
-  );
+    // Skip cross-origin requests
+    if (!event.request.url.startsWith(self.location.origin) && 
+        !event.request.url.includes('cdn.jsdelivr.net')) {
+        return;
+    }
+    
+    event.respondWith(
+        caches.match(event.request)
+            .then((response) => {
+                // Return cached version or fetch from network
+                if (response) {
+                    return response;
+                }
+                
+                // Clone the request because it's a stream
+                const fetchRequest = event.request.clone();
+                
+                return fetch(fetchRequest).then((response) => {
+                    // Check if we received a valid response
+                    if (!response || response.status !== 200 || response.type !== 'basic') {
+                        return response;
+                    }
+                    
+                    // Clone the response because it's a stream
+                    const responseToCache = response.clone();
+                    
+                    caches.open(CACHE_NAME)
+                        .then((cache) => {
+                            cache.put(event.request, responseToCache);
+                        });
+                    
+                    return response;
+                }).catch((error) => {
+                    console.error('Fetch failed:', error);
+                    
+                    // Return offline page for navigation requests
+                    if (event.request.destination === 'document') {
+                        return caches.match('/index.html');
+                    }
+                    
+                    throw error;
+                });
+            })
+    );
+});
+
+// Handle messages from clients
+self.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'SKIP_WAITING') {
+        self.skipWaiting();
+    }
+});
+
+// Background sync for when app comes back online
+self.addEventListener('sync', (event) => {
+    if (event.tag === 'background-sync') {
+        event.waitUntil(
+            // Perform background sync tasks
+            console.log('Background sync triggered')
+        );
+    }
+});
+
+// Push notification handling
+self.addEventListener('push', (event) => {
+    const options = {
+        body: event.data ? event.data.text() : 'New notification from Family PWA',
+        icon: '/icon-192.png',
+        badge: '/icon-72.png',
+        vibrate: [100, 50, 100],
+        data: {
+            dateOfArrival: Date.now(),
+            primaryKey: 1
+        }
+    };
+    
+    event.waitUntil(
+        self.registration.showNotification('Family PWA', options)
+    );
+});
+
+// Notification click handling
+self.addEventListener('notificationclick', (event) => {
+    event.notification.close();
+    
+    event.waitUntil(
+        clients.openWindow('/')
+    );
 });
