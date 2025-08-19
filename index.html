@@ -1,15 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Face Recognition PWA</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Family PWA - FaceNet Test</title>
+  <style>
+    body { text-align: center; font-family: Arial, sans-serif; }
+    video, canvas { border: 2px solid #ccc; margin: 10px; }
+    #status { margin-top: 10px; font-weight: bold; }
+  </style>
 </head>
 <body>
-  <h2>📷 Face Recognition Test</h2>
-  <video id="video" autoplay playsinline width="400" height="300" style="border:1px solid black;"></video>
+  <h1>Face Recognition Test</h1>
+  
+  <video id="video" autoplay playsinline width="640" height="480"></video>
+  <canvas id="overlay" width="640" height="480"></canvas>
+  
+  <div id="status">Loading...</div>
 
-  <!-- Link your JS file -->
-  <script src="script.js"></script>
+  <!-- ✅ TensorFlow.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0"></script>
+
+  <!-- ✅ Mediapipe Face Detection -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/face_detection.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+
+  <!-- ✅ Your App -->
+  <script src="app.js"></script>
 </body>
 </html>
