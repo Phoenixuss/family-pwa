@@ -1,9 +1,9 @@
-// PWA service worker registration
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker
-      .register('sw.js')
-      .then((reg) => console.log('SW registered:', reg.scope))
-      .catch((err) => console.warn('SW registration failed:', err));
-  });
+{
+  "name": "Family PWA Face Recognition",
+  "short_name": "FamilyPWA",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#111111",
+  "theme_color": "#111111",
+  "orientation": "portrait",
 }
