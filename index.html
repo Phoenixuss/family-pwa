@@ -3,10 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Family PWA - Face Recognition</title>
+    <title>Family PWA - Dual Camera Face Recognition</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2196F3">
-    <meta name="description" content="Family PWA with Face Recognition">
+    <meta name="description" content="Family PWA with dual camera face recognition">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Family PWA">
+    
     <style>
         * {
             margin: 0;
@@ -23,6 +27,9 @@
             align-items: center;
             justify-content: center;
             color: white;
+            user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
         }
         
         .container {
@@ -33,7 +40,7 @@
             backdrop-filter: blur(10px);
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
             border: 1px solid rgba(255, 255, 255, 0.18);
-            max-width: 600px;
+            max-width: 700px;
             width: 90%;
         }
         
@@ -57,12 +64,55 @@
             top: 0;
             left: 0;
             pointer-events: none;
+            border-radius: 10px;
         }
         
         .video-container {
             position: relative;
             display: inline-block;
             margin: 20px 0;
+        }
+        
+        .camera-controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+        
+        .camera-switch-btn {
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .camera-switch-btn:hover {
+            background: rgba(33, 150, 243, 0.8);
+            transform: scale(1.1);
+        }
+        
+        .camera-indicator {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            z-index: 10;
         }
         
         button {
@@ -76,24 +126,89 @@
             margin: 10px;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+            touch-action: manipulation;
         }
         
-        button:hover {
+        button:hover:not(:disabled) {
             background: #1976D2;
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
         }
         
         button:disabled {
             background: #ccc;
             cursor: not-allowed;
             transform: none;
+            opacity: 0.6;
+        }
+        
+        .registration-guide {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .angle-indicator {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            z-index: 10;
+            max-width: 90%;
+            text-align: center;
+        }
+        
+        .registration-progress {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        
+        .progress-step {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .progress-step.active {
+            background: #2196F3;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .progress-step.completed {
+            background: #4CAF50;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
         
         .status {
             margin: 20px 0;
             font-size: 18px;
             font-weight: bold;
+            min-height: 24px;
         }
         
         .error {
@@ -102,6 +217,28 @@
         
         .success {
             color: #4CAF50;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: 2px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        input[type="text"]:focus {
+            border-color: #2196F3;
+            background: rgba(255,255,255,0.2);
+        }
+        
+        input[type="text"]::placeholder {
+            color: rgba(255,255,255,0.7);
         }
         
         @media (max-width: 768px) {
@@ -113,28 +250,133 @@
                 margin: 10px;
                 padding: 15px;
             }
+            
+            .camera-switch-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+            
+            .progress-step {
+                width: 25px;
+                height: 25px;
+                font-size: 12px;
+            }
+            
+            button {
+                padding: 10px 20px;
+                font-size: 14px;
+                margin: 5px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+        
+        /* Loading spinner */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Offline indicator */
+        [data-network="offline"] {
+            filter: grayscale(20%);
+        }
+        
+        /* PWA specific styles */
+        @media (display-mode: standalone) {
+            body {
+                padding-top: env(safe-area-inset-top);
+                padding-bottom: env(safe-area-inset-bottom);
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🏠 Family PWA</h1>
-        <p>Face Recognition System</p>
         
-        <div class="video-container">
-            <video id="video" autoplay muted playsinline></video>
-            <canvas id="canvas"></canvas>
+        <!-- Registration Mode -->
+        <div id="registrationMode" style="display: none;">
+            <h2>📷 Register New Family Member</h2>
+            
+            <div class="registration-guide">
+                <h3>📋 Registration Process</h3>
+                <p><strong>We need 5 face angles:</strong></p>
+                <ol>
+                    <li>👤 <strong>Straight</strong> - Look directly at camera</li>
+                    <li>👆 <strong>Up</strong> - Tilt head up 30°</li>
+                    <li>👇 <strong>Down</strong> - Tilt head down 30°</li>
+                    <li>👉 <strong>Right</strong> - Turn head right 45°</li>
+                    <li>👈 <strong>Left</strong> - Turn head left 45°</li>
+                </ol>
+                <p><strong>💡 Tip:</strong> Use front camera for easier self-registration, or back camera with assistance!</p>
+            </div>
+            
+            <input type="text" id="personName" placeholder="Enter person's name">
+            
+            <div class="registration-progress">
+                <div class="progress-step active" id="step0">1</div>
+                <div class="progress-step" id="step1">2</div>
+                <div class="progress-step" id="step2">3</div>
+                <div class="progress-step" id="step3">4</div>
+                <div class="progress-step" id="step4">5</div>
+            </div>
+            
+            <button id="startRegistration">🎯 Start Registration</button>
+            <button id="captureAngle" style="display: none;">📸 Capture This Angle</button>
+            <button id="completeRegistration" style="display: none;">✅ Complete Registration</button>
+            <button id="cancelRegistration">❌ Cancel</button>
         </div>
         
-        <div class="status" id="status">Initializing...</div>
-        
-        <div>
-            <button id="startBtn">Start Camera</button>
-            <button id="stopBtn" disabled>Stop Camera</button>
-            <button id="detectBtn" disabled>Detect Faces</button>
+        <!-- Recognition Mode -->
+        <div id="recognitionMode">
+            <p>🔍 Face Recognition System</p>
+            
+            <div class="video-container">
+                <div class="camera-indicator" id="cameraIndicator">📷 Front Camera</div>
+                <div class="camera-controls">
+                    <button class="camera-switch-btn" id="switchCameraBtn" title="Switch Camera">🔄</button>
+                </div>
+                <video id="video" autoplay muted playsinline></video>
+                <canvas id="canvas"></canvas>
+                <div class="angle-indicator" id="angleIndicator" style="display: none;">Ready to start</div>
+            </div>
+            
+            <div class="status" id="status">Ready to start</div>
+            
+            <div>
+                <button id="startBtn">📹 Start Camera</button>
+                <button id="stopBtn" disabled>⏹️ Stop Camera</button>
+                <button id="detectBtn" disabled>🔍 Start Recognition</button>
+                <button id="registerBtn" disabled>➕ Register New Person</button>
+                <button id="syncDriveBtn" disabled>☁️ Sync to Drive</button>
+            </div>
+            
+            <div id="recognitionResults" style="margin-top: 20px;"></div>
+            
+            <div id="familyMembersList" style="margin-top: 30px; text-align: left;"></div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
@@ -143,4 +385,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
