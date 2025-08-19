@@ -1,7 +1,7 @@
 {
-    "name": "Family PWA - Face Recognition",
+    "name": "Family PWA - Dual Camera Face Recognition",
     "short_name": "FamilyPWA",
-    "description": "A Progressive Web App for family face recognition",
+    "description": "A Progressive Web App for family face recognition with dual camera support",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#667eea",
@@ -9,5 +9,18 @@
     "orientation": "portrait-primary",
     "scope": "/",
     "lang": "en",
-    "categories": ["utilities", "productivity"]
+    "categories": ["utilities", "productivity", "lifestyle"],
+    "permissions": [
+        "camera",
+        "storage"
+    ],
+    "features": [
+        "camera",
+        "face-detection",
+        "offline-storage"
+    ],
+    "display_override": ["window-controls-overlay", "standalone"],
+    "launch_handler": {
+        "client_mode": "navigate-existing"
+    }
 }
