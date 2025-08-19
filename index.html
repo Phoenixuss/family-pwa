@@ -3,29 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Family PWA - FaceNet Test</title>
+  <title>Family PWA - Face Recognition</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#317EFB" />
   <style>
-    body { text-align: center; font-family: Arial, sans-serif; }
-    video, canvas { border: 2px solid #ccc; margin: 10px; }
-    #status { margin-top: 10px; font-weight: bold; }
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #111;
+      color: white;
+    }
+    video, canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    #container {
+      position: relative;
+      width: 640px;
+      height: 480px;
+    }
+    #status {
+      margin-top: 500px;
+      font-size: 1.2em;
+    }
   </style>
 </head>
 <body>
-  <h1>Face Recognition Test</h1>
-  
-  <video id="video" autoplay playsinline width="640" height="480"></video>
-  <canvas id="overlay" width="640" height="480"></canvas>
-  
+  <h1>Family PWA Face Recognition</h1>
+
+  <div id="container">
+    <video id="video" autoplay muted playsinline width="640" height="480"></video>
+    <canvas id="overlay" width="640" height="480"></canvas>
+  </div>
+
   <div id="status">Loading...</div>
 
   <!-- ✅ TensorFlow.js -->
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0"></script>
 
-  <!-- ✅ Mediapipe Face Detection -->
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/face_detection.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+  <!-- ✅ MediaPipe Face Detection + Camera Utils -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_detection"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils"></script>
 
-  <!-- ✅ Your App -->
+  <!-- ✅ Our scripts -->
+  <script src="script.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
