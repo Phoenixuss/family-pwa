@@ -1,9 +1,10 @@
 {
-  "name": "Family Face Recognition",
-  "short_name": "FamilyPWA",
-  "start_url": "./index.html",
+  "name": "Family PWA",
+  "short_name": "FamilyApp",
+  "start_url": ".",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#1976d2",
+  "background_color": "#ffffff",
+  "theme_color": "#317EFB",
+  "description": "A family PWA with face recognition",
+  "orientation": "portrait"
 }
-
