@@ -8,7 +8,7 @@ let facenetModel = null;
 // ✅ Load FaceNet model
 async function loadModel() {
   statusEl.innerText = "Loading FaceNet model...";
-  facenetModel = await tf.loadLayersModel("https://phoenixuss.github.io/pwa-assets/models/facenet/model.json");
+  facenetModel = await tf.loadLayersModel("https://phoenixuss.github.io/pwa-assets/model/facenet/model.json");
   statusEl.innerText = "Model loaded. Starting camera...";
 }
 
@@ -85,3 +85,4 @@ async function onFaceResults(results) {
   await loadModel();
   await startCamera();
 })();
+
