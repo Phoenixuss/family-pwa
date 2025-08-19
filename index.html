@@ -1,44 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Family PWA</title>
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#317EFB" />
-  <style>
-    body {
-      margin: 0;
-      background: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    video, canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 640px;
-      height: 480px;
-      border-radius: 12px;
-    }
-    #overlay {
-      pointer-events: none;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family PWA - Face Recognition</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+    <meta name="theme-color" content="#2196F3">
+    <meta name="description" content="Family PWA with Face Recognition">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .container {
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            max-width: 600px;
+            width: 90%;
+        }
+        
+        h1 {
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        #video {
+            width: 100%;
+            max-width: 480px;
+            height: auto;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+        
+        .video-container {
+            position: relative;
+            display: inline-block;
+            margin: 20px 0;
+        }
+        
+        button {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+        }
+        
+        button:hover {
+            background: #1976D2;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .status {
+            margin: 20px 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .error {
+            color: #ff4444;
+        }
+        
+        .success {
+            color: #4CAF50;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <!-- Video feed -->
-  <video id="video" autoplay muted playsinline></video>
+    <div class="container">
+        <h1>🏠 Family PWA</h1>
+        <p>Face Recognition System</p>
+        
+        <div class="video-container">
+            <video id="video" autoplay muted playsinline></video>
+            <canvas id="canvas"></canvas>
+        </div>
+        
+        <div class="status" id="status">Initializing...</div>
+        
+        <div>
+            <button id="startBtn">Start Camera</button>
+            <button id="stopBtn" disabled>Stop Camera</button>
+            <button id="detectBtn" disabled>Detect Faces</button>
+        </div>
+    </div>
 
-  <!-- Canvas for bounding boxes -->
-  <canvas id="overlay" width="640" height="480"></canvas>
-
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_detection"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils"></script>
-  <script src="app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/face_detection.js"></script>
+    <script src="app.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
