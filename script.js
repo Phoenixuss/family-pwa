@@ -1,16 +1,9 @@
-const video = document.getElementById("video");
-
-async function startCamera() {
-  try {
-    // Request camera permission
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-    video.srcObject = stream;
-    console.log("Camera started ✅");
-  } catch (err) {
-    console.error("Camera error ❌", err);
-    alert("Could not access camera: " + err.message);
-  }
+// PWA service worker registration
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('sw.js')
+      .then((reg) => console.log('SW registered:', reg.scope))
+      .catch((err) => console.warn('SW registration failed:', err));
+  });
 }
-
-// Start camera when page loads
-window.addEventListener("load", startCamera);
