@@ -5,8 +5,6 @@ const urlsToCache = [
     '/app.js',
     '/script.js',
     '/manifest.json',
-    '/icon-192.png',
-    '/icon-512.png',
     'https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js',
     'https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js',
     'https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js',
@@ -142,3 +140,4 @@ self.addEventListener('notificationclick', (event) => {
         clients.openWindow('/')
     );
 });
+
