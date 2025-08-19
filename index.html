@@ -1,22 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Face Recognition Demo</title>
-  <style>
-    body { text-align: center; font-family: sans-serif; }
-    video, canvas { border: 2px solid black; margin-top: 10px; }
-  </style>
+  <title>Face Recognition PWA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-  <h1>Camera + Face Recognition</h1>
-  <video id="video" width="480" height="360" autoplay muted></video>
-  <canvas id="overlay" width="480" height="360"></canvas>
+  <h2>📷 Face Recognition Test</h2>
+  <video id="video" autoplay playsinline width="400" height="300" style="border:1px solid black;"></video>
 
-  <!-- Load TensorFlow.js -->
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
-  <!-- Load face-api.js -->
-  <script src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
+  <!-- Link your JS file -->
   <script src="script.js"></script>
 </body>
 </html>
