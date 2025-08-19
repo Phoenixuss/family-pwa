@@ -2,55 +2,55 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Family PWA - Face Recognition</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"
+  />
+  <title>Family PWA – Face Recognition</title>
+
+  <!-- PWA manifest -->
   <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#317EFB" />
+  <meta name="theme-color" content="#111111" />
+
   <style>
+    :root { color-scheme: light dark; }
     body {
       margin: 0;
-      font-family: sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background: #111;
-      color: white;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background:#111; color:#fff; display:flex; flex-direction:column;
+      align-items:center; min-height:100vh;
     }
-    video, canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
+    h1 { font-weight:600; font-size:1.2rem; margin:16px 0 8px; }
+    #stage {
+      position: relative; width: 640px; max-width: 100vw; aspect-ratio: 4 / 3;
+      background:#000; overflow:hidden; border-radius:12px;
     }
-    #container {
-      position: relative;
-      width: 640px;
-      height: 480px;
+    #video, #overlay {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
     }
-    #status {
-      margin-top: 500px;
-      font-size: 1.2em;
-    }
+    #status { margin: 12px 0 24px; font-size: 0.95rem; opacity: 0.9; }
+    .footer { opacity:0.6; font-size:12px; margin-top:auto; padding:10px 0 16px; }
   </style>
+
+  <!-- libs (defer = run after parsing; order matters) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/face_detection.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+
+  <!-- your scripts (also deferred) -->
+  <script defer src="script.js"></script>
+  <script defer src="app.js"></script>
 </head>
 <body>
-  <h1>Family PWA Face Recognition</h1>
+  <h1>Family PWA – Face Recognition</h1>
 
-  <div id="container">
-    <video id="video" autoplay muted playsinline width="640" height="480"></video>
-    <canvas id="overlay" width="640" height="480"></canvas>
+  <div id="stage">
+    <video id="video" autoplay muted playsinline></video>
+    <canvas id="overlay"></canvas>
   </div>
 
-  <div id="status">Loading...</div>
+  <div id="status">booting…</div>
 
-  <!-- ✅ TensorFlow.js -->
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0"></script>
-
-  <!-- ✅ MediaPipe Face Detection + Camera Utils -->
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_detection"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils"></script>
-
-  <!-- ✅ Our scripts -->
-  <script src="script.js"></script>
-  <script src="app.js"></script>
+  <div class="footer">Tip: open this page directly (not inside GitHub’s preview frame) so the camera prompt appears.</div>
 </body>
 </html>
